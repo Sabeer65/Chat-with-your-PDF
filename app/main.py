@@ -1,14 +1,13 @@
 import streamlit as st
-from pypdf import PdfReader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_ollama import OllamaEmbeddings
-from langchain_community.vectorstores import FAISS
 from langchain_ollama import ChatOllama
-import time
+import os 
+from utils import process_pdf
 
 st.title("Chat with your PDF")
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+ollama_base_url = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+
+llm = ChatOllama(model="llama3.2",base_url=ollama_base_url, temperature=0)
 
 
 if "messages" not in st.session_state:
@@ -24,23 +23,9 @@ with st.sidebar:
     if pdffile is not None:
         if st.session_state.vector_store is None:
             try:
-                reader = PdfReader(pdffile)
-                pdf_text = ''
-
                 with st.spinner("Wait for it...", show_time=True):
-                    for pages in reader.pages:
-                        pdf_text += pages.extract_text()
-
-                    # Splitting the text into chunks
-                    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-                    chunks = text_splitter.split_text(pdf_text)
-                    
-                    # embedding the text and storing it in session state
-                    embeddings = OllamaEmbeddings(model="llama3.2")
-                    st.session_state.vector_store = FAISS.from_texts(chunks, embeddings)
-
+                    st.session_state.vector_store = process_pdf(pdffile, ollama_base_url)
                 st.success("Pdf Loaded succesfully")
-
 
             except Exception as exc:
                 st.error(f"Failed to load PDF {exc}")
