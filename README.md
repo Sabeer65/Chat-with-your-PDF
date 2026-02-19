@@ -20,15 +20,20 @@ The system works by extracting text from the PDF, splitting it into smaller chun
 - **Text Chunking:** Breaks large documents into manageable searchable sections.
 - **Local Vector Search (FAISS):** Enables semantic retrieval without external services.
 - **Context-Grounded Responses:** Answers are generated strictly from retrieved document content.
-- **Fully Local Execution:** No external APIs or hosted models required.
+- **Fully Local Execution:** No external APIs, cloud models, or hosted services required.
+- **Docker Support:** Containerized setup available for consistent local deployment.
 
 ## Repository Structure
 
 - `app.py` – Contains the main RAG pipeline implementation.
 - `requirements.txt` – Lists required Python libraries.
+- `Dockerfile` – Defines the containerized environment.
+- `docker-compose.yml` – Optional multi-container setup configuration.
 - `README.md` – Project documentation.
 
 ## Installation
+
+Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/Sabeer65/Chat-with-your-PDF.git
@@ -36,9 +41,35 @@ cd Chat-with-your-PDF
 pip install -r requirements.txt
 ```
 
+## Docker Setup
+
+You can also run the application using Docker.
+
+Build the Docker image:
+
+```bash
+docker build -t chat-with-your-pdf .
+```
+
+Run the container:
+
+```bash
+docker run -p 8501:8501 chat-with-your-pdf
+```
+
+Then open your browser and navigate to:
+
+http://localhost:8501
+
+If using Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
 ## Usage
 
-Run the application:
+Run the application locally:
 
 ```bash
 streamlit run app.py
@@ -73,7 +104,3 @@ This project demonstrates:
 - Vector similarity search using FAISS
 - Building document-based QA systems
 - Handling real-world unstructured data
-
-## License
-
-This project is open-source and intended for educational and learning purposes.
