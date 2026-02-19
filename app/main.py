@@ -1,7 +1,7 @@
 import streamlit as st
 from langchain_ollama import ChatOllama
 import os 
-from utils import process_pdf
+from utils import process_pdf, format_chat_history
 
 st.title("Chat with your PDF")
 
@@ -39,6 +39,8 @@ user_input = st.chat_input("Type your question here")
 # If no user input or vector_store do not run code
 if user_input and st.session_state.vector_store is not None:
 
+    history = format_chat_history(st.session_state.messages)
+    
     st.session_state.messages.append({'role':'user', 'content':user_input})
 
     with st.chat_message("user"):
@@ -52,9 +54,7 @@ if user_input and st.session_state.vector_store is not None:
             context = ''
             for doc in docs:
                 context += doc.page_content +"\n\n" # Set the context from the docs
-            history = ''
-            for msg in st.session_state.messages:
-                history += f"{msg['role']}: {msg['content']}\n"
+            
             # Prompt for the llm 
             prompt = f"""
         You are a helpful AI assistant. 
