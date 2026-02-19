@@ -20,3 +20,9 @@ def process_pdf(pdf_file, ollama_base_url):
     vector_store = FAISS.from_texts(chunks, embeddings)
 
     return vector_store
+
+def format_chat_history(messages ,limit=6):
+    formatted_history = ""
+    for msg in messages[-limit:]:
+        formatted_history += f"{msg['role']}: {msg['content']}\n"
+    return formatted_history

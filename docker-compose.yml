@@ -12,6 +12,8 @@ services:
     image: ollama/ollama
     volumes:
       - ollama_data:/root/.ollama
+      - ./pull-model.sh:/pull-model.sh:ro
+    entrypoint: ["/bin/bash", "/pull-model.sh"]
     ports:
       - "11434:11434"
 
